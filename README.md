@@ -30,9 +30,10 @@ npm test
 
 ## 기술 구성
 
-- Next.js App Router 호환 구조
+- Next.js 16 App Router
 - React 19 + TypeScript
-- Vinext / Vite 기반 Cloudflare 배포 빌드
+- Tailwind CSS v4 (PostCSS)
+- Vercel 배포
 - 반응형 CSS 및 `prefers-reduced-motion` 지원
 
 ## 문의

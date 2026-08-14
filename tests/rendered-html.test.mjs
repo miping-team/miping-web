@@ -1,17 +1,64 @@
 import assert from "node:assert/strict";
+import { spawn } from "node:child_process";
 import { access, readFile } from "node:fs/promises";
-import test from "node:test";
+import test, { after, before } from "node:test";
+import { fileURLToPath } from "node:url";
+
+const PORT = Number(process.env.TEST_PORT ?? 3123);
+const BASE_URL = `http://127.0.0.1:${PORT}`;
+const READY_TIMEOUT_MS = 60_000;
+
+let server;
+
+/** Polls the production server until it answers, so tests never race the boot. */
+async function waitForServer(signal) {
+  const deadline = Date.now() + READY_TIMEOUT_MS;
+
+  while (Date.now() < deadline) {
+    if (signal.exited) {
+      throw new Error(`next start exited early:\n${signal.output}`);
+    }
+    try {
+      const response = await fetch(BASE_URL, { headers: { accept: "text/html" } });
+      if (response.ok) return;
+    } catch {
+      // Server is still binding; retry.
+    }
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+
+  throw new Error(`next start did not become ready in ${READY_TIMEOUT_MS}ms:\n${signal.output}`);
+}
+
+function stop(child) {
+  if (!child || child.exitCode !== null) return;
+  if (process.platform === "win32") {
+    // Next spawns workers, so kill the whole tree rather than just the parent.
+    spawn("taskkill", ["/pid", String(child.pid), "/T", "/F"], { stdio: "ignore" });
+  } else {
+    child.kill("SIGTERM");
+  }
+}
+
+before(async () => {
+  const state = { exited: false, output: "" };
+  const nextBin = fileURLToPath(new URL("../node_modules/next/dist/bin/next", import.meta.url));
+  server = spawn(process.execPath, [nextBin, "start", "-p", String(PORT)], {
+    cwd: fileURLToPath(new URL("..", import.meta.url)),
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+
+  server.stdout.on("data", (chunk) => (state.output += chunk));
+  server.stderr.on("data", (chunk) => (state.output += chunk));
+  server.on("exit", () => (state.exited = true));
+
+  await waitForServer(state);
+});
+
+after(() => stop(server));
 
 async function render(path = "/") {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-${path}`);
-  const { default: worker } = await import(workerUrl.href);
-
-  return worker.fetch(
-    new Request(`http://localhost${path}`, { headers: { accept: "text/html" } }),
-    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
-    { waitUntil() {}, passThroughOnException() {} },
-  );
+  return fetch(`${BASE_URL}${path}`, { headers: { accept: "text/html" } });
 }
 
 test("renders the MiPing landing page with product-specific content", async () => {
@@ -54,6 +101,21 @@ test("renders the imported legal documents", async () => {
   assert.match(terms, /서비스 이용약관/);
   assert.match(terms, /중간지점 및 이동시간/);
   assert.match(terms, /준거법 및 관할/);
+});
+
+test("serves the static assets referenced by the pages", async () => {
+  const assets = [
+    "/app-icon.png",
+    "/app-icon-original.png",
+    "/app-store-badge-ko.svg",
+    "/google-play-badge-ko.png",
+    "/og.png",
+  ];
+
+  for (const asset of assets) {
+    const response = await fetch(`${BASE_URL}${asset}`);
+    assert.equal(response.status, 200, `${asset} should be served`);
+  }
 });
 
 test("ships project assets and removes the starter preview", async () => {

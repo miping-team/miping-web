@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(echo \"exit=$?\")"
+      "Bash(echo \"exit=$?\")",
+      "Bash(npx eslint *)",
+      "Bash(echo \"lint exit: $?\")"
     ]
   }
 }

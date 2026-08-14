@@ -59,8 +59,8 @@ export default function Home() {
             모두가 납득할 수 있는 만남 장소를 찾아드려요.
           </p>
           <div className="hero-actions">
-            <a className="button button-primary" href="#how">미핑 알아보기 <span>↘</span></a>
-            <a className="text-link" href="mailto:tr_cycle-miping@naver.com">문의하기 <span>→</span></a>
+            <StoreButtons />
+            <a className="text-link" href="#how">먼저 둘러보기 <span>↓</span></a>
           </div>
           <ul className="hero-points" aria-label="미핑 주요 특징">
             <li><i>✓</i> 최대 8명</li>
@@ -185,9 +185,8 @@ export default function Home() {
       </section>
 
       <section className="privacy-teaser section-pad">
-        <div className="character-wrap" aria-hidden="true">
-          <div className="character-halo" />
-          <img src="/miping-character.png" alt="" width={420} height={420} />
+        <div className="character-wrap">
+          <img src="/app-icon.png" alt="미핑 앱 아이콘" width={400} height={400} />
         </div>
         <div className="privacy-copy">
           <p className="section-index">04 · 안심하고 쓰도록</p>
@@ -203,17 +202,18 @@ export default function Home() {
       <section className="final-cta" id="coming-soon">
         <div className="final-route route-left" aria-hidden="true" />
         <div className="final-route route-right" aria-hidden="true" />
-        <div className="final-pin" aria-hidden="true"><i /></div>
+        <img className="final-app-icon" src="/app-icon-original.png" alt="미핑 앱 아이콘" width={96} height={96} />
         <p>우리의 다음 약속</p>
         <h2>이번에는,<br />미핑에서 만나요.</h2>
-        <span>Android 앱을 준비하고 있어요.</span>
-        <a className="button button-dark" href="mailto:tr_cycle-miping@naver.com?subject=미핑 출시 소식 신청">출시 소식 문의하기 <b>→</b></a>
+        <span>Android와 iPhone 앱을 준비하고 있어요.</span>
+        <StoreButtons />
       </section>
 
       <footer>
         <div className="footer-brand"><img src="/app-icon.png" alt="" width={34} height={34} /><strong>미핑</strong><span>우리 사이, 딱 좋은 중간</span></div>
         <div className="footer-links"><Link href="/privacy">개인정보처리방침</Link><Link href="/terms">서비스 이용약관</Link><a href="mailto:tr_cycle-miping@naver.com">문의</a></div>
         <p>© 2026 MiPing. All rights reserved.</p>
+        <p className="store-credits">Apple 및 Apple 로고는 Apple Inc.의 상표입니다. Google Play 및 Google Play 로고는 Google LLC의 상표입니다.</p>
       </footer>
     </main>
   );
@@ -247,6 +247,26 @@ function FeatureVisual({ type }: { type: string }) {
       <div className="time-route route-card-b"><span>민준</span><i /><b>29분</b></div>
       <div className="time-route route-card-c"><span>지우</span><i /><b>31분</b></div>
       <div className="center-marker"><i /><strong>성수역</strong><small>시간 차이 3분</small></div>
+    </div>
+  );
+}
+
+function StoreButtons() {
+  return (
+    <div className="store-buttons" aria-label="앱 다운로드 준비 중">
+      <span className="store-badge-wrap">
+        <button className="store-badge-official" type="button" disabled aria-label="App Store 출시 준비 중">
+          {/* width/height are each asset's intrinsic size — the rendered size comes from CSS. */}
+          <img src="/app-store-badge-ko.svg" alt="App Store에서 다운로드" width={130} height={40} />
+        </button>
+        <small>출시 준비 중</small>
+      </span>
+      <span className="store-badge-wrap">
+        <button className="store-badge-official google-play-badge" type="button" disabled aria-label="Google Play 출시 준비 중">
+          <img src="/google-play-badge-ko.png" alt="Google Play에서 다운로드" width={646} height={250} />
+        </button>
+        <small>출시 준비 중</small>
+      </span>
     </div>
   );
 }

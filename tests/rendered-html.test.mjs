@@ -24,6 +24,11 @@ test("renders the MiPing landing page with product-specific content", async () =
   assert.match(html, /우리, 어디서 만날까\?/);
   assert.match(html, /실제 이동시간/);
   assert.match(html, /최대 8명/);
+  assert.match(html, /App Store/);
+  assert.match(html, /Google Play/);
+  assert.match(html, /app-store-badge-ko\.svg/);
+  assert.match(html, /google-play-badge-ko\.png/);
+  assert.match(html, /app-icon-original\.png/);
   assert.match(html, /공평함의 기준/);
   assert.match(html, /href="\/privacy"/);
   assert.match(html, /href="\/terms"/);
@@ -59,7 +64,9 @@ test("ships project assets and removes the starter preview", async () => {
   assert.match(layout, /lang="ko"/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   await access(new URL("../public/app-icon.png", import.meta.url));
-  await access(new URL("../public/miping-character.png", import.meta.url));
+  await access(new URL("../public/app-icon-original.png", import.meta.url));
+  await access(new URL("../public/app-store-badge-ko.svg", import.meta.url));
+  await access(new URL("../public/google-play-badge-ko.png", import.meta.url));
   await access(new URL("../public/og.png", import.meta.url));
   await assert.rejects(access(new URL("../app/_sites-preview", import.meta.url)));
 });

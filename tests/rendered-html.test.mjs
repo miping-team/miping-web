@@ -70,7 +70,7 @@ test("renders the MiPing landing page with product-specific content", async () =
   assert.match(html, /<title>미핑 — 우리 사이, 딱 좋은 중간<\/title>/);
   assert.match(html, /우리, 어디서 만날까\?/);
   assert.match(html, /실제 이동시간/);
-  assert.match(html, /최대 8명/);
+  assert.match(html, /6명까지/);
   assert.match(html, /App Store/);
   assert.match(html, /Google Play/);
   assert.match(html, /app-store-badge-ko\.svg/);

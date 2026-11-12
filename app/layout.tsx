@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
     icons: { icon: "/app-icon.png", apple: "/app-icon.png" },
     openGraph: {
       title: "미핑 — 우리, 어디서 만날까?",
-      description: "이동시간이 공평한 중간지점을 찾아드려요.",
+      description: "실제 이동시간으로 찾는, 모두에게 공평한 중간지점.",
       type: "website",
       locale: "ko_KR",
       images: [{ url: `${origin}/og.png`, width: 1792, height: 1024, alt: "미핑 앱 소개" }],
@@ -22,7 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title: "미핑 — 우리, 어디서 만날까?",
-      description: "이동시간이 공평한 중간지점을 찾아드려요.",
+      description: "실제 이동시간으로 찾는, 모두에게 공평한 중간지점.",
       images: [`${origin}/og.png`],
     },
   };
@@ -31,6 +31,9 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ko">
+      <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+      </head>
       <body>{children}</body>
     </html>
   );
